@@ -15,7 +15,7 @@
         <!-- 输入区域 -->
         <textarea id="inputText" rows="5" placeholder="请输入文本..."></textarea>
 
-        <!-- 格式选择 -->
+        <!-- 格式选择（文本输入） -->
         <div class="format-selection">
             <label>输入格式:</label>
             <select id="inputFormat">
@@ -27,16 +27,27 @@
             </select>
         </div>
 
-        <!-- 操作按钮 -->
+        <!-- 操作按钮（文本输入） -->
         <div class="buttons">
             <button id="convertToFile">转换为文件</button>
-            <button id="convertToRaw">转换为纯文本</button>
+            <button id="convertToRaw" disabled>转换为纯文本</button>
         </div>
 
-        <!-- 文件上传 -->
-        <label>上传文件:</label>
-        <input type="file" id="fileInput">
-        <button id="uploadToRaw">将上传文件转换为纯文本</button>
+        <!-- 文件上传区域 -->
+        <div class="upload-section">
+            <h2>上传文件转换</h2>
+            <div class="upload-wrapper">
+                <input type="file" id="fileInput" accept="*/*">
+                <label for="fileInput" class="upload-label">选择文件</label>
+            </div>
+            <div class="upload-format">
+                <label>输出格式:</label>
+                <select id="uploadOutputFormat">
+                    <option value="">选择输出格式</option>
+                </select>
+            </div>
+            <button id="uploadFile" disabled>上传并转换</button>
+        </div>
 
         <!-- 输出区域 -->
         <div id="outputArea" class="hidden">

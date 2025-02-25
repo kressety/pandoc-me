@@ -1,21 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = 'https://pandoc-api.mealuet.com/';
+    const API_BASE = 'http://pandoc-api.mealuet.com/';
     const inputText = document.getElementById('inputText');
     const inputFormatSelect = document.getElementById('inputFormat');
     const outputFormatSelect = document.getElementById('outputFormat');
     const convertToFileBtn = document.getElementById('convertToFile');
     const convertToRawBtn = document.getElementById('convertToRaw');
     const fileInput = document.getElementById('fileInput');
-    const uploadToRawBtn = document.getElementById('uploadToRaw');
+    const uploadFileBtn = document.getElementById('uploadFile');
+    const uploadOutputFormatSelect = document.getElementById('uploadOutputFormat');
     const outputArea = document.getElementById('outputArea');
     const outputText = document.getElementById('outputText');
+
+    // 允许转换为纯文本的格式
+    const allowedRawFormats = [
+        'markdown', 'markdown_strict', 'markdown_phpextra', 'markdown_github', 'commonmark', 'gfm',
+        'latex', 'html'
+    ];
 
     // 获取支持的格式
     async function loadFormats() {
         try {
             const response = await fetch(`${API_BASE}formats`);
             const formats = await response.json();
-            console.log('Fetched formats:', formats); // 调试输出
+            console.log('Fetched formats:', formats);
             Object.keys(formats).forEach(fmt => {
                 const inputOption = document.createElement('option');
                 inputOption.value = fmt;
@@ -26,9 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 outputOption.value = fmt;
                 outputOption.textContent = fmt;
                 outputFormatSelect.appendChild(outputOption);
+
+                const uploadOption = document.createElement('option');
+                uploadOption.value = fmt;
+                uploadOption.textContent = fmt;
+                uploadOutputFormatSelect.appendChild(uploadOption);
             });
-            // 动画加载格式选项
-            gsap.from([inputFormatSelect.children, outputFormatSelect.children], {
+            gsap.from([inputFormatSelect.children, outputFormatSelect.children, uploadOutputFormatSelect.children], {
                 opacity: 0,
                 y: 20,
                 stagger: 0.1,
@@ -44,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputFormat = inputFormatSelect.value;
         const outputFormat = outputFormatSelect.value;
         const text = inputText.value;
-        if (!inputFormat || !outputFormat || !text) return alert('Please select input/output formats and enter text');
+        if (!inputFormat || !outputFormat || !text) return alert('请选择输入/输出格式并输入文本');
 
         const formData = new FormData();
         const blob = new Blob([text], { type: 'text/plain' });
@@ -65,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             animateButton(convertToFileBtn);
         } catch (error) {
             console.error('Conversion failed:', error);
-            alert('Conversion failed: ' + error.message);
+            alert('转换失败：' + error.message);
         }
     });
 
@@ -74,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputFormat = inputFormatSelect.value;
         const outputFormat = outputFormatSelect.value;
         const text = inputText.value;
-        if (!inputFormat || !outputFormat || !text) return alert('Please select input/output formats and enter text');
+        if (!inputFormat || !outputFormat || !text) return alert('请选择输入/输出格式并输入文本');
 
         const formData = new FormData();
         const blob = new Blob([text], { type: 'text/plain' });
@@ -90,15 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
             animateButton(convertToRawBtn);
         } catch (error) {
             console.error('Conversion failed:', error);
-            alert('Conversion failed: ' + error.message);
+            alert('转换失败：' + error.message);
         }
     });
 
     // 文件转文件
-    fileInput.addEventListener('change', async (e) => {
-        const outputFormat = outputFormatSelect.value;
-        const file = e.target.files[0];
-        if (!outputFormat || !file) return alert('Please select an output format and upload a file');
+    uploadFileBtn.addEventListener('click', async () => {
+        const outputFormat = uploadOutputFormatSelect.value;
+        const file = fileInput.files[0];
+        if (!outputFormat || !file) return alert('请选择输出格式并上传文件');
 
         const formData = new FormData();
         formData.append('file', file);
@@ -115,34 +126,26 @@ document.addEventListener('DOMContentLoaded', () => {
             a.download = `output.${outputFormat}`;
             a.click();
             window.URL.revokeObjectURL(url);
-            animateButton(fileInput);
+            animateButton(uploadFileBtn);
         } catch (error) {
             console.error('Conversion failed:', error);
-            alert('Conversion failed: ' + error.message);
+            alert('转换失败：' + error.message);
         }
     });
 
-    // 文件转 Raw Text
-    uploadToRawBtn.addEventListener('click', async () => {
+    // 动态控制“转换为纯文本”按钮状态
+    outputFormatSelect.addEventListener('change', () => {
         const outputFormat = outputFormatSelect.value;
-        const file = fileInput.files[0];
-        if (!outputFormat || !file) return alert('Please select an output format and upload a file');
+        convertToRawBtn.disabled = !allowedRawFormats.includes(outputFormat);
+    });
 
-        const formData = new FormData();
-        formData.append('file', file);
+    // 启用/禁用上传按钮
+    uploadOutputFormatSelect.addEventListener('change', () => {
+        uploadFileBtn.disabled = !uploadOutputFormatSelect.value || !fileInput.files[0];
+    });
 
-        try {
-            const response = await fetch(`${API_BASE}convert?to=${outputFormat}`, {
-                method: 'POST',
-                body: formData
-            });
-            const rawText = await response.text();
-            showOutput(rawText);
-            animateButton(uploadToRawBtn);
-        } catch (error) {
-            console.error('Conversion failed:', error);
-            alert('Conversion failed: ' + error.message);
-        }
+    fileInput.addEventListener('change', () => {
+        uploadFileBtn.disabled = !uploadOutputFormatSelect.value || !fileInput.files[0];
     });
 
     // 显示输出
