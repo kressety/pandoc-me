@@ -1,24 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { gsap } from 'gsap';
 
 const API_BASE = 'https://pandoc-api.mealuet.com/';
 
 function App() {
-    const [formats, setFormats] = useState([]);
+    const [formats, setFormats] = useState({});
     const [inputText, setInputText] = useState('');
-    const [selectedFormat, setSelectedFormat] = useState('');
+    const [inputFormat, setInputFormat] = useState('markdown'); // 默认 Markdown
+    const [outputFormat, setOutputFormat] = useState('');
     const [outputText, setOutputText] = useState('');
     const [showOutput, setShowOutput] = useState(false);
+    const inputSelectRef = useRef(null);
+    const outputSelectRef = useRef(null);
 
     // 获取支持的格式
     useEffect(() => {
         const fetchFormats = async () => {
             try {
                 const response = await axios.get(`${API_BASE}formats`);
-                const formatList = Object.keys(response.data);
-                setFormats(formatList);
-                gsap.from('.format-option', { opacity: 0, y: 20, stagger: 0.1, duration: 0.5 });
+                setFormats(response.data);
+                console.log('Fetched formats:', response.data);
             } catch (error) {
                 console.error('Failed to load formats:', error);
             }
@@ -26,57 +28,83 @@ function App() {
         fetchFormats();
     }, []);
 
+    // 输入格式选择框动画
+    useEffect(() => {
+        if (Object.keys(formats).length > 0 && inputSelectRef.current) {
+            gsap.from(inputSelectRef.current.children, {
+                opacity: 0,
+                y: 20,
+                stagger: 0.1,
+                duration: 0.5,
+            });
+        }
+    }, [formats]);
+
+    // 输出格式选择框动画
+    useEffect(() => {
+        if (Object.keys(formats).length > 0 && outputSelectRef.current) {
+            gsap.from(outputSelectRef.current.children, {
+                opacity: 0,
+                y: 20,
+                stagger: 0.1,
+                duration: 0.5,
+            });
+        }
+    }, [formats]);
+
     // 文本转文件
     const convertTextToFile = async () => {
-        if (!selectedFormat || !inputText) return alert('Please select a format and enter text');
+        if (!inputFormat || !outputFormat || !inputText) return alert('Please select input/output formats and enter text');
         const formData = new FormData();
         const blob = new Blob([inputText], { type: 'text/plain' });
-        formData.append('file', blob, 'input.txt');
+        formData.append('file', blob, `input.${inputFormat}`);
 
         try {
-            const response = await axios.post(`${API_BASE}convert?to=${selectedFormat}`, formData, {
+            const response = await axios.post(`${API_BASE}convert?to=${outputFormat}`, formData, {
                 responseType: 'blob',
             });
             const url = window.URL.createObjectURL(response.data);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `output.${selectedFormat}`;
+            a.download = `output.${outputFormat}`;
             a.click();
             window.URL.revokeObjectURL(url);
             animateButton('#convertToFile');
         } catch (error) {
-            console.error('Conversion failed:', error);
+            console.error('Conversion failed:', error.response?.data || error);
+            alert('Conversion failed: ' + (error.response?.data || 'Unknown error'));
         }
     };
 
     // 文本转 Raw Text
     const convertTextToRaw = async () => {
-        if (!selectedFormat || !inputText) return alert('Please select a format and enter text');
+        if (!inputFormat || !outputFormat || !inputText) return alert('Please select input/output formats and enter text');
         const formData = new FormData();
         const blob = new Blob([inputText], { type: 'text/plain' });
-        formData.append('file', blob, 'input.txt');
+        formData.append('file', blob, `input.${inputFormat}`);
 
         try {
-            const response = await axios.post(`${API_BASE}convert?to=${selectedFormat}`, formData);
+            const response = await axios.post(`${API_BASE}convert?to=${outputFormat}`, formData);
             setOutputText(response.data);
             setShowOutput(true);
             animateOutput();
             animateButton('#convertToRaw');
         } catch (error) {
-            console.error('Conversion failed:', error);
+            console.error('Conversion failed:', error.response?.data || error);
+            alert('Conversion failed: ' + (error.response?.data || 'Unknown error'));
         }
     };
 
     // 文件转文件或 Raw Text
     const handleFileUpload = async (e, toRaw = false) => {
         const file = e.target.files[0];
-        if (!selectedFormat || !file) return alert('Please select a format and upload a file');
+        if (!outputFormat || !file) return alert('Please select an output format and upload a file');
 
         const formData = new FormData();
         formData.append('file', file);
 
         try {
-            const response = await axios.post(`${API_BASE}convert?to=${selectedFormat}`, formData, {
+            const response = await axios.post(`${API_BASE}convert?to=${outputFormat}`, formData, {
                 responseType: toRaw ? 'text' : 'blob',
             });
             if (toRaw) {
@@ -87,17 +115,17 @@ function App() {
                 const url = window.URL.createObjectURL(response.data);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `output.${selectedFormat}`;
+                a.download = `output.${outputFormat}`;
                 a.click();
                 window.URL.revokeObjectURL(url);
             }
             animateButton('#fileInput');
         } catch (error) {
-            console.error('Conversion failed:', error);
+            console.error('Conversion failed:', error.response?.data || error);
+            alert('Conversion failed: ' + (error.response?.data || 'Unknown error'));
         }
     };
 
-    // 动画函数
     const animateButton = (selector) => {
         gsap.to(selector, { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1 });
     };
@@ -120,14 +148,30 @@ function App() {
                     onChange={(e) => setInputText(e.target.value)}
                 />
 
-                {/* 格式选择 */}
+                {/* 输入格式选择 */}
+                <label className="block mb-2 text-sm">Input Format:</label>
                 <select
+                    ref={inputSelectRef}
                     className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
-                    value={selectedFormat}
-                    onChange={(e) => setSelectedFormat(e.target.value)}
+                    value={inputFormat}
+                    onChange={(e) => setInputFormat(e.target.value)}
+                >
+                    <option value="">Select Input Format</option>
+                    {Object.keys(formats).map((fmt) => (
+                        <option key={fmt} value={fmt} className="format-option">{fmt}</option>
+                    ))}
+                </select>
+
+                {/* 输出格式选择 */}
+                <label className="block mb-2 text-sm">Output Format:</label>
+                <select
+                    ref={outputSelectRef}
+                    className="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 mb-6"
+                    value={outputFormat}
+                    onChange={(e) => setOutputFormat(e.target.value)}
                 >
                     <option value="">Select Output Format</option>
-                    {formats.map((fmt) => (
+                    {Object.keys(formats).map((fmt) => (
                         <option key={fmt} value={fmt} className="format-option">{fmt}</option>
                     ))}
                 </select>
