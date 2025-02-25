@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pandoc Converter</title>
-  <link rel="icon" type="image/x-icon" href="/src/assets/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandoc Converter</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body>
-<div id="root"></div>
-<script type="module" src="/src/main.jsx"></script>
+    <div class="container">
+        <h1>Pandoc Converter</h1>
+
+        <!-- 输入区域 -->
+        <textarea id="inputText" rows="5" placeholder="Enter your text here..."></textarea>
+
+        <!-- 格式选择 -->
+        <div class="format-selection">
+            <label>Input Format:</label>
+            <select id="inputFormat">
+                <option value="">Select Input Format</option>
+            </select>
+            <label>Output Format:</label>
+            <select id="outputFormat">
+                <option value="">Select Output Format</option>
+            </select>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="buttons">
+            <button id="convertToFile">Convert to File</button>
+            <button id="convertToRaw">Convert to Raw Text</button>
+        </div>
+
+        <!-- 文件上传 -->
+        <label>Upload File:</label>
+        <input type="file" id="fileInput">
+        <button id="uploadToRaw">Convert Uploaded File to Raw Text</button>
+
+        <!-- 输出区域 -->
+        <div id="outputArea" class="hidden">
+            <h2>Output:</h2>
+            <pre id="outputText"></pre>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
