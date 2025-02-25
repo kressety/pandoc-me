@@ -101,15 +101,23 @@ select:focus {
     margin-bottom: 15px;
 }
 
+.upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
 .upload-wrapper {
     position: relative;
     display: inline-block;
-    margin-bottom: 15px;
 }
 
 input[type="file"] {
     opacity: 0;
-    width: 100%;
+    width: 120px;
     height: 40px;
     position: absolute;
     top: 0;
@@ -140,8 +148,6 @@ input[type="file"] {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
 }
 
 button {
