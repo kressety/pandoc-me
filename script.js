@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = 'http://pandoc-api.mealuet.com/';
+    const API_BASE = 'https://pandoc-api.mealuet.com/';
     const inputText = document.getElementById('inputText');
     const inputFormatSelect = document.getElementById('inputFormat');
     const outputFormatSelect = document.getElementById('outputFormat');
