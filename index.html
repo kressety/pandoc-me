@@ -1,46 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pandoc Converter</title>
+    <title>Pandoc 转换器</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>Pandoc Converter</h1>
+        <h1>Pandoc 转换器</h1>
 
         <!-- 输入区域 -->
-        <textarea id="inputText" rows="5" placeholder="Enter your text here..."></textarea>
+        <textarea id="inputText" rows="5" placeholder="请输入文本..."></textarea>
 
         <!-- 格式选择 -->
         <div class="format-selection">
-            <label>Input Format:</label>
+            <label>输入格式:</label>
             <select id="inputFormat">
-                <option value="">Select Input Format</option>
+                <option value="">选择输入格式</option>
             </select>
-            <label>Output Format:</label>
+            <label>输出格式:</label>
             <select id="outputFormat">
-                <option value="">Select Output Format</option>
+                <option value="">选择输出格式</option>
             </select>
         </div>
 
         <!-- 操作按钮 -->
         <div class="buttons">
-            <button id="convertToFile">Convert to File</button>
-            <button id="convertToRaw">Convert to Raw Text</button>
+            <button id="convertToFile">转换为文件</button>
+            <button id="convertToRaw">转换为纯文本</button>
         </div>
 
         <!-- 文件上传 -->
-        <label>Upload File:</label>
+        <label>上传文件:</label>
         <input type="file" id="fileInput">
-        <button id="uploadToRaw">Convert Uploaded File to Raw Text</button>
+        <button id="uploadToRaw">将上传文件转换为纯文本</button>
 
         <!-- 输出区域 -->
         <div id="outputArea" class="hidden">
-            <h2>Output:</h2>
+            <h2>输出结果:</h2>
             <pre id="outputText"></pre>
         </div>
     </div>

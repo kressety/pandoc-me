@@ -1,9 +1,9 @@
 body {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2f2f4f);
+    color: #e0e0ff;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,91 +11,95 @@ body {
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    max-width: 600px;
+    background: rgba(30, 30, 47, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    max-width: 700px;
     width: 100%;
     text-align: center;
 }
 
 h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    animation: pulse 2s infinite;
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    color: #a0a0ff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 textarea {
     width: 100%;
-    padding: 10px;
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    max-width: 100%;
+    padding: 12px;
+    background-color: #2a2a3d;
+    border: 1px solid #3f3f5f;
     border-radius: 8px;
-    color: #fff;
+    color: #e0e0ff;
     font-size: 1em;
-    resize: none;
+    box-sizing: border-box;
     margin-bottom: 20px;
-    transition: border 0.3s;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 textarea:focus {
     outline: none;
-    border-color: #8a4af3;
+    border-color: #6b5bff;
+    box-shadow: 0 0 8px rgba(107, 91, 255, 0.5);
 }
 
 .format-selection {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 25px;
     justify-content: center;
+    align-items: center;
 }
 
 label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.9em;
+    font-size: 0.95em;
+    color: #c0c0ff;
+    margin-right: 10px;
 }
 
 select {
-    padding: 8px;
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    padding: 10px;
+    background-color: #2a2a3d;
+    border: 1px solid #3f3f5f;
     border-radius: 8px;
-    color: #fff;
+    color: #e0e0ff;
     font-size: 1em;
     cursor: pointer;
-    transition: border 0.3s;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 select:focus {
     outline: none;
-    border-color: #8a4af3;
+    border-color: #6b5bff;
+    background-color: #353550;
 }
 
 .buttons {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 25px;
     justify-content: center;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #8a4af3;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #6b5bff, #4a3aff);
     border: none;
     border-radius: 8px;
-    color: #fff;
+    color: #ffffff;
     font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
-    background-color: #6a3ab2;
+    box-shadow: 0 4px 15px rgba(107, 91, 255, 0.6);
 }
 
 button:active {
@@ -104,19 +108,19 @@ button:active {
 
 input[type="file"] {
     display: block;
-    margin: 10px auto;
-    padding: 5px;
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    margin: 15px auto;
+    padding: 8px;
+    background-color: #2a2a3d;
+    border: 1px solid #3f3f5f;
     border-radius: 8px;
-    color: #fff;
+    color: #e0e0ff;
 }
 
 #outputArea {
-    margin-top: 20px;
+    margin-top: 25px;
     padding: 15px;
-    background-color: #2a2a2a;
-    border: 1px solid #444;
+    background-color: #2a2a3d;
+    border: 1px solid #3f3f5f;
     border-radius: 8px;
     text-align: left;
 }
@@ -128,10 +132,15 @@ input[type="file"] {
 #outputText {
     white-space: pre-wrap;
     font-size: 0.9em;
+    color: #d0d0ff;
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+/* 标题淡入动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    animation: fadeIn 1s ease-out forwards;
 }
