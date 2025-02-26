@@ -9,7 +9,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 </head>
 <body>
-    <div class="container">
+    <!-- 加载界面 -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
+
+    <!-- 主界面 -->
+    <div class="container hidden">
         <h1>Pandoc 转换器</h1>
 
         <!-- 输入区域 -->
@@ -40,6 +47,7 @@
                 <div class="upload-wrapper">
                     <input type="file" id="fileInput" accept="*/*">
                     <label for="fileInput" class="upload-label">选择文件</label>
+                    <span id="fileName" class="file-name"></span>
                 </div>
                 <div class="upload-format">
                     <label>输出格式:</label>

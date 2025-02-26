@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadOutputFormatSelect = document.getElementById('uploadOutputFormat');
     const outputArea = document.getElementById('outputArea');
     const outputText = document.getElementById('outputText');
+    const fileNameDisplay = document.getElementById('fileName');
+    const loading = document.getElementById('loading');
+    const container = document.querySelector('.container');
 
     // 允许转换为纯文本的格式
     const allowedRawFormats = [
@@ -45,8 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 stagger: 0.1,
                 duration: 0.5
             });
+            // 隐藏加载界面，显示主界面
+            gsap.to(loading, { opacity: 0, duration: 0.5, onComplete: () => loading.classList.add('hidden') });
+            container.classList.remove('hidden');
+            gsap.from(container, { opacity: 0, duration: 0.5 });
         } catch (error) {
             console.error('Failed to load formats:', error);
+            alert('加载格式失败，请刷新重试');
         }
     }
 
@@ -133,6 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 显示上传文件名并控制上传按钮状态
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.textContent = fileInput.files[0].name;
+        } else {
+            fileNameDisplay.textContent = '';
+        }
+        uploadFileBtn.disabled = !uploadOutputFormatSelect.value || !fileInput.files[0];
+    });
+
     // 动态控制“转换为纯文本”按钮状态
     outputFormatSelect.addEventListener('change', () => {
         const outputFormat = outputFormatSelect.value;
@@ -141,10 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 启用/禁用上传按钮
     uploadOutputFormatSelect.addEventListener('change', () => {
-        uploadFileBtn.disabled = !uploadOutputFormatSelect.value || !fileInput.files[0];
-    });
-
-    fileInput.addEventListener('change', () => {
         uploadFileBtn.disabled = !uploadOutputFormatSelect.value || !fileInput.files[0];
     });
 
